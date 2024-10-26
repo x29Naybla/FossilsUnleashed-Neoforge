@@ -2,5 +2,10 @@
   "item.fossilsunleashed.fossil": "Fossil",
   "item.fossilsunleashed.dna": "DNA",
 
-  "creativetab.fossilsunleashed.items": "Fossils Unleashed Items"
+  "entity.fossilsunleashed.velociraptor": "Velociraptor",
+
+  "item.fossilsunleashed.velociraptor_spawn_egg": "Velociraptor Spawn Egg",
+
+  "creativetab.fossilsunleashed.items": "Fossils Unleashed Items",
+  "creativetab.fossilsunleashed.blocks": "Fossils Unleashed Blocks"
 }

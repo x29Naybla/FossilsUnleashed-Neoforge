@@ -3,6 +3,7 @@ package com.x29naybla.fossilsunleashed;
 import com.x29naybla.fossilsunleashed.block.ModBlocks;
 import com.x29naybla.fossilsunleashed.item.ModCreativeModeTabs;
 import com.x29naybla.fossilsunleashed.item.ModItems;
+import com.x29naybla.fossilsunleashed.registry.EntityRegistry;
 import org.slf4j.Logger;
 
 import com.mojang.logging.LogUtils;
@@ -35,6 +36,7 @@ public class FossilsUnleashed {
         ModItems.register(modEventBus);
         ModBlocks.register(modEventBus);
         ModCreativeModeTabs.register(modEventBus);
+        EntityRegistry.ENTITY_TYPES.register(modEventBus);
 
         modEventBus.addListener(this::addCreative);
 
