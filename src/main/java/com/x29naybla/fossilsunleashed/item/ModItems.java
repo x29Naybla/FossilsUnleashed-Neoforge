@@ -17,7 +17,7 @@ public class ModItems {
             () -> new Item(new Item.Properties()));
 
     public static final DeferredItem<Item> VELOCIRAPTOR_SPAWN_EGG = ITEMS.register("velociraptor_spawn_egg",
-            () -> new SpawnEggItem(EntityRegistry.VELOCIRAPTOR.get(), 0xebe4b5, 0x8f330d, new Item.Properties()));
+            () -> new SpawnEggItem(EntityRegistry.VELOCIRAPTOR.get(), 0xebe4b5, 0xdb822d, new Item.Properties()));
 
     public static void register(IEventBus eventBus){
         ITEMS.register(eventBus);

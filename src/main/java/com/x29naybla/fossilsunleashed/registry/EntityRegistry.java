@@ -25,7 +25,7 @@ public class EntityRegistry {
     public static void registerEntityAttributes(EntityAttributeCreationEvent event) {
         AttributeSupplier.Builder velociraptorAttributes = PathfinderMob.createMobAttributes()
                 .add(Attributes.FOLLOW_RANGE, 16)
-                .add(Attributes.MOVEMENT_SPEED, 0.3)
+                .add(Attributes.MOVEMENT_SPEED, 0.4)
                 .add(Attributes.ATTACK_DAMAGE,4)
                 .add(Attributes.MAX_HEALTH, 8);
 

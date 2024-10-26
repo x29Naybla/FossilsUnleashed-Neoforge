@@ -1,14 +1,33 @@
 package com.x29naybla.fossilsunleashed.entity;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.x29naybla.fossilsunleashed.registry.EntityRegistry;
 import com.x29naybla.fossilsunleashed.util.ModTags;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.tags.DamageTypeTags;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.*;
+import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.*;
+import net.minecraft.world.entity.ai.goal.target.*;
+import net.minecraft.world.entity.animal.Animal;
+import net.minecraft.world.entity.animal.Turtle;
+import net.minecraft.world.entity.animal.Wolf;
+import net.minecraft.world.entity.animal.horse.Llama;
+import net.minecraft.world.entity.monster.AbstractSkeleton;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.food.FoodProperties;
+import net.minecraft.world.item.*;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.enchantment.EnchantmentEffectComponents;
+import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.gameevent.GameEvent;
+import net.neoforged.neoforge.common.ItemAbilities;
+import net.neoforged.neoforge.event.EventHooks;
 import org.jetbrains.annotations.Nullable;
 import software.bernie.geckolib.animatable.GeoEntity;
 import software.bernie.geckolib.animatable.instance.AnimatableInstanceCache;
@@ -28,6 +47,8 @@ public class VelociraptorEntity extends TamableAnimal implements GeoEntity {
 
     public VelociraptorEntity(EntityType<? extends TamableAnimal> entityType, Level level) {
         super(entityType, level);
+        this.setTame(false,false);
+
     }
 
     @Override
@@ -38,10 +59,8 @@ public class VelociraptorEntity extends TamableAnimal implements GeoEntity {
     protected <E extends VelociraptorEntity> PlayState animController(final AnimationState<E> event) {
         if (event.isMoving()) {
             if (this.isSprinting()) {
-                event.setControllerSpeed(0.45F);
                 event.setAnimation(RUN);
             } else {
-                event.setControllerSpeed(0.3F);
                 event.setAnimation(WALK);
             }
         } else {
@@ -52,14 +71,14 @@ public class VelociraptorEntity extends TamableAnimal implements GeoEntity {
     }
 
     protected void registerGoals(){
-        this.goalSelector.addGoal(0, new FloatGoal(this));
-        this.goalSelector.addGoal(0, new PanicGoal(this, 1.3));
-        this.goalSelector.addGoal(1, new SitWhenOrderedToGoal(this));
-        this.goalSelector.addGoal(2, new BreedGoal(this, 1.0));
-        this.goalSelector.addGoal(4, new TemptGoal(this, 1.25, FOOD_ITEMS, false));
-        this.goalSelector.addGoal(5, new FollowParentGoal(this, 1.25));
-        this.goalSelector.addGoal(6, new WaterAvoidingRandomStrollGoal(this, 1.0));
-        this.goalSelector.addGoal(7, new LookAtPlayerGoal(this, Player.class, 6.0F));
+        this.goalSelector.addGoal(1, new FloatGoal(this));
+        this.goalSelector.addGoal(1, new PanicGoal(this, 1f));
+        this.goalSelector.addGoal(2, new SitWhenOrderedToGoal(this));
+        this.goalSelector.addGoal(4, new LeapAtTargetGoal(this, 0.4F));
+        this.goalSelector.addGoal(5, new MeleeAttackGoal(this, 1.0, true));
+        this.goalSelector.addGoal(6, new BreedGoal(this, 1.0));
+        this.goalSelector.addGoal(7, new WaterAvoidingRandomStrollGoal(this, 1.0));
+        this.goalSelector.addGoal(8, new LookAtPlayerGoal(this, Player.class, 8.0F));
         this.goalSelector.addGoal(8, new RandomLookAroundGoal(this));
     }
 
@@ -81,21 +100,8 @@ public class VelociraptorEntity extends TamableAnimal implements GeoEntity {
         this.setInSittingPose(false);
     }
 
-    private void setFlag(int i, boolean bl) {
-        if (bl) {
-            this.entityData.set(DATA_FLAGS_ID, (byte)(this.entityData.get(DATA_FLAGS_ID) | i));
-        } else {
-            this.entityData.set(DATA_FLAGS_ID, (byte)(this.entityData.get(DATA_FLAGS_ID) & ~i));
-        }
-
-    }
-
-    private boolean getFlag(int i) {
-        return (this.entityData.get(DATA_FLAGS_ID) & i) != 0;
-    }
-
     @Override
     public @Nullable AgeableMob getBreedOffspring(ServerLevel serverLevel, AgeableMob ageableMob) {
-        return null;
+        return (AgeableMob) EntityRegistry.VELOCIRAPTOR.get().create(level());
     }
 }

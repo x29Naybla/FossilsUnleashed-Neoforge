@@ -93,6 +93,7 @@ configurations {
 
 dependencies {
     implementation "software.bernie.geckolib:geckolib-neoforge-1.21.1:${geckolib_version}"
+    implementation "curse.maven:paleolib-1127817:5843790"
 }
 
 var generateModMetadata = tasks.register("generateModMetadata", ProcessResources) {

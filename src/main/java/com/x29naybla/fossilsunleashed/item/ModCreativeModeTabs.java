@@ -20,10 +20,20 @@ public class ModCreativeModeTabs {
                     .displayItems((itemDisplayParameters, output) -> {
                         output.accept(ModItems.FOSSIL);
                         output.accept(ModItems.DNA);
+                        output.accept(ModItems.VELOCIRAPTOR_SPAWN_EGG);
 
                     }).build());
 
-    public static void register(IEventBus eventBus) {
+    public static final Supplier<CreativeModeTab> FOSSILSUNLEASHED_BLOCKS_TAB = CREATIVE_MODE_TAB.register("fossilsunleashed_blocks_tab",
+            () -> CreativeModeTab.builder().icon(() -> new ItemStack(ModItems.FOSSIL.get()))
+                    .title(Component.translatable("creativetab.fossilsunleashed.blocks"))
+                    .displayItems((itemDisplayParameters, output) -> {
+
+                    }).build());
+
+
+
+                        public static void register(IEventBus eventBus) {
         CREATIVE_MODE_TAB.register(eventBus);
     }
 }
