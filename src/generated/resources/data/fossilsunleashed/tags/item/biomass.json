@@ -1,0 +1,12 @@
+{
+  "values": [
+    "#c:foods",
+    "#c:animal_foods",
+    "#c:seeds",
+    "#c:bones",
+    "#c:leathers",
+    "#c:crops",
+    "#c:eggs",
+    "#c:mushrooms"
+  ]
+}

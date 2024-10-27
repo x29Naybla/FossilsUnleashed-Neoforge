@@ -29,19 +29,19 @@
 					]
 				},
 				{
+					"name": "tail",
+					"parent": "body",
+					"pivot": [0, 10.51225, 4.04125],
+					"cubes": [
+						{"origin": [-2.5, 9.51225, 4.04125], "size": [5, 2, 13], "uv": [14, 24]}
+					]
+				},
+				{
 					"name": "head",
 					"parent": "upper_body",
 					"pivot": [0, 11, -3.5],
 					"cubes": [
 						{"origin": [-1.5, 11, -11], "size": [3, 4, 8], "uv": [38, 5]}
-					]
-				},
-				{
-					"name": "tail",
-					"parent": "upper_body",
-					"pivot": [0, 10.51225, 4.04125],
-					"cubes": [
-						{"origin": [-2.5, 9.51225, 4.04125], "size": [5, 2, 13], "uv": [14, 24]}
 					]
 				},
 				{

@@ -5,8 +5,10 @@ import com.x29naybla.fossilsunleashed.util.ModTags;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.tags.ItemTagsProvider;
+import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.level.block.Block;
+import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import org.jetbrains.annotations.Nullable;
 
@@ -20,9 +22,18 @@ public class ModItemTagProvider extends ItemTagsProvider {
 
     @Override
     protected void addTags(HolderLookup.Provider provider) {
-        //SimpleSoy Tags
+        //Fossils Unleashed Tags
         tag(ModTags.Items.VELOCIRAPTOR_FOOD)
                 .addTag(ItemTags.WOLF_FOOD);
 
+        tag(ModTags.Items.BIOMASS)
+                .addTag(Tags.Items.FOODS)
+                .addTag(Tags.Items.ANIMAL_FOODS)
+                .addTag(Tags.Items.SEEDS)
+                .addTag(Tags.Items.BONES)
+                .addTag(Tags.Items.LEATHERS)
+                .addTag(Tags.Items.CROPS)
+                .addTag(Tags.Items.EGGS)
+                .addTag(Tags.Items.MUSHROOMS);
     }
 }
