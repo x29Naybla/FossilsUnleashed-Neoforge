@@ -14,6 +14,7 @@ import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.*;
 import net.minecraft.world.entity.ai.goal.target.*;
+import net.minecraft.world.entity.ai.targeting.TargetingConditions;
 import net.minecraft.world.entity.animal.*;
 import net.minecraft.world.entity.monster.AbstractSkeleton;
 import net.minecraft.world.entity.player.Player;
@@ -27,6 +28,7 @@ import software.bernie.geckolib.animation.*;
 import software.bernie.geckolib.animation.AnimationState;
 import software.bernie.geckolib.util.GeckoLibUtil;
 
+import java.util.EnumSet;
 import java.util.UUID;
 import java.util.function.Predicate;
 
@@ -59,7 +61,9 @@ public class VelociraptorEntity extends TamableAnimal implements NeutralMob, Geo
     }
 
     protected <E extends VelociraptorEntity> PlayState animController(final AnimationState<E> event) {
-        if (isInSittingPose()){
+        if (this.isSleeping()){
+            event.setAnimation(SLEEP);
+        }else if (isInSittingPose()){
             event.setAnimation(SIT);
         }else if (event.isMoving()) {
             if (this.isSprinting()) {
@@ -75,12 +79,13 @@ public class VelociraptorEntity extends TamableAnimal implements NeutralMob, Geo
     }
 
     protected void registerGoals(){
-        this.goalSelector.addGoal(0, new FollowParentGoal(this,1f));
         this.goalSelector.addGoal(1, new FloatGoal(this));
         this.goalSelector.addGoal(1, new PanicGoal(this, 1.5F));
         this.goalSelector.addGoal(2, new SitWhenOrderedToGoal(this));
+        this.goalSelector.addGoal(3, new SleepGoal());
         this.goalSelector.addGoal(3, new LeapAtTargetGoal(this, 0.4F));
         this.goalSelector.addGoal(4, new MeleeAttackGoal(this, 1.0, true));
+        this.goalSelector.addGoal(4, new FollowParentGoal(this,1f));
         this.goalSelector.addGoal(5, new FollowOwnerGoal(this, 1.0, 10.0F, 2.0F));
         this.goalSelector.addGoal(6, new BreedGoal(this, 1.0));
         this.goalSelector.addGoal(7, new WaterAvoidingRandomStrollGoal(this, 1.0));
@@ -94,14 +99,6 @@ public class VelociraptorEntity extends TamableAnimal implements NeutralMob, Geo
         this.targetSelector.addGoal(7, new NearestAttackableTargetGoal(this, AbstractSkeleton.class, false));
         this.targetSelector.addGoal(8, new ResetUniversalAngerTargetGoal(this, true));
     }
-
-
-
-    protected void defineSynchedData(SynchedEntityData.Builder builder) {
-        super.defineSynchedData(builder);
-        builder.define(DATA_REMAINING_ANGER_TIME, 0);
-    }
-
 
     @Override
     public AnimatableInstanceCache getAnimatableInstanceCache() {
@@ -175,17 +172,51 @@ public class VelociraptorEntity extends TamableAnimal implements NeutralMob, Geo
 
     void clearStates() {
         this.setInSittingPose(false);
+        this.setSleeping(false);
     }
 
-    @Override
-    public @Nullable AgeableMob getBreedOffspring(ServerLevel serverLevel, AgeableMob ageableMob) {
-        VelociraptorEntity velociraptor = (VelociraptorEntity) EntityRegistry.VELOCIRAPTOR.get().create(level());
-        if (this.isTame()) {
-            velociraptor.setOwnerUUID(this.getOwnerUUID());
-            velociraptor.setTame(true, true);
+    protected void defineSynchedData(SynchedEntityData.Builder builder) {
+        super.defineSynchedData(builder);
+        builder.define(DATA_REMAINING_ANGER_TIME, 0);
+    }
+
+    public boolean isSleeping() {
+        return this.getFlag(32);
+    }
+
+    public void setSleeping(boolean bl) {
+        this.setFlag(32, bl);
+    }
+
+    private void setFlag(int i, boolean bl) {
+        if (bl) {
+            this.entityData.set(DATA_FLAGS_ID, (byte)(this.entityData.get(DATA_FLAGS_ID) | i));
+        } else {
+            this.entityData.set(DATA_FLAGS_ID, (byte)(this.entityData.get(DATA_FLAGS_ID) & ~i));
         }
 
-        return velociraptor;
+    }
+
+    private boolean getFlag(int i) {
+        return (this.entityData.get(DATA_FLAGS_ID) & i) != 0;
+    }
+
+    void wakeUp() {
+        this.setSleeping(false);
+    }
+
+    public void tick() {
+        super.tick();
+        if (this.isEffectiveAi()) {
+            if (this.isInWater() || this.getTarget() != null || this.level().isThundering()) {
+                this.wakeUp();
+            }
+
+            if (this.isInWater() || this.isSleeping()) {
+                this.setInSittingPose(false);
+            }
+        }
+
     }
 
     public boolean canMate(Animal otherAnimal) {
@@ -202,6 +233,62 @@ public class VelociraptorEntity extends TamableAnimal implements NeutralMob, Geo
             }
         } else {
             return false;
+        }
+    }
+
+    @Override
+    public @Nullable AgeableMob getBreedOffspring(ServerLevel serverLevel, AgeableMob ageableMob) {
+        VelociraptorEntity velociraptor = (VelociraptorEntity) EntityRegistry.VELOCIRAPTOR.get().create(level());
+        if (this.isTame()) {
+            velociraptor.setOwnerUUID(this.getOwnerUUID());
+            velociraptor.setTame(true, true);
+        }
+
+        return velociraptor;
+    }
+
+    private class SleepGoal extends Goal {
+        private final int WAIT_TIME_BEFORE_SLEEP = random.nextInt(100) + 100;
+        private int countdown;
+
+        public SleepGoal() {
+            super();
+            this.countdown = VelociraptorEntity.this.random.nextInt(WAIT_TIME_BEFORE_SLEEP);
+            this.setFlags(EnumSet.of(Flag.MOVE, Flag.LOOK, Flag.JUMP));
+        }
+
+        public boolean canUse() {
+            if (VelociraptorEntity.this.xxa == 0.0F && VelociraptorEntity.this.yya == 0.0F && VelociraptorEntity.this.zza == 0.0F) {
+                return this.canSleep() || VelociraptorEntity.this.isSleeping();
+            } else {
+                return false;
+            }
+        }
+
+        public boolean canContinueToUse() {
+            return this.canSleep();
+        }
+
+        private boolean canSleep() {
+            if (this.countdown > 0) {
+                --this.countdown;
+                return false;
+            } else {
+                return ((VelociraptorEntity.this.level().getDayTime() >= 1500 && VelociraptorEntity.this.level().getDayTime() <= 10500)) && !VelociraptorEntity.this.isInPowderSnow && !VelociraptorEntity.this.isPassenger();
+            }
+        }
+
+        public void stop() {
+            this.countdown = VelociraptorEntity.this.random.nextInt(WAIT_TIME_BEFORE_SLEEP);
+            clearStates();
+        }
+
+        public void start() {
+            VelociraptorEntity.this.setInSittingPose(false);
+            VelociraptorEntity.this.setJumping(false);
+            VelociraptorEntity.this.setSleeping(true);
+            VelociraptorEntity.this.getNavigation().stop();
+            VelociraptorEntity.this.getMoveControl().setWantedPosition(VelociraptorEntity.this.getX(), VelociraptorEntity.this.getY(), VelociraptorEntity.this.getZ(), 0.0);
         }
     }
 
