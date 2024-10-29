@@ -1,0 +1,157 @@
+{
+  "variants": {
+    "eggs=1,hatch=0": [
+      {
+        "model": "fossilsunleashed:block/velociraptor_egg"
+      },
+      {
+        "model": "fossilsunleashed:block/velociraptor_egg",
+        "y": 90
+      },
+      {
+        "model": "fossilsunleashed:block/velociraptor_egg",
+        "y": 180
+      },
+      {
+        "model": "fossilsunleashed:block/velociraptor_egg",
+        "y": 270
+      }
+    ],
+    "eggs=1,hatch=1": [
+      {
+        "model": "fossilsunleashed:block/slightly_cracked_velociraptor_egg"
+      },
+      {
+        "model": "fossilsunleashed:block/slightly_cracked_velociraptor_egg",
+        "y": 90
+      },
+      {
+        "model": "fossilsunleashed:block/slightly_cracked_velociraptor_egg",
+        "y": 180
+      },
+      {
+        "model": "fossilsunleashed:block/slightly_cracked_velociraptor_egg",
+        "y": 270
+      }
+    ],
+    "eggs=1,hatch=2": [
+      {
+        "model": "fossilsunleashed:block/very_cracked_velociraptor_egg"
+      },
+      {
+        "model": "fossilsunleashed:block/very_cracked_velociraptor_egg",
+        "y": 90
+      },
+      {
+        "model": "fossilsunleashed:block/very_cracked_velociraptor_egg",
+        "y": 180
+      },
+      {
+        "model": "fossilsunleashed:block/very_cracked_velociraptor_egg",
+        "y": 270
+      }
+    ],
+    "eggs=2,hatch=0": [
+      {
+        "model": "fossilsunleashed:block/two_velociraptor_eggs"
+      },
+      {
+        "model": "fossilsunleashed:block/two_velociraptor_eggs",
+        "y": 90
+      },
+      {
+        "model": "fossilsunleashed:block/two_velociraptor_eggs",
+        "y": 180
+      },
+      {
+        "model": "fossilsunleashed:block/two_velociraptor_eggs",
+        "y": 270
+      }
+    ],
+    "eggs=2,hatch=1": [
+      {
+        "model": "fossilsunleashed:block/two_slightly_cracked_velociraptor_eggs"
+      },
+      {
+        "model": "fossilsunleashed:block/two_slightly_cracked_velociraptor_eggs",
+        "y": 90
+      },
+      {
+        "model": "fossilsunleashed:block/two_slightly_cracked_velociraptor_eggs",
+        "y": 180
+      },
+      {
+        "model": "fossilsunleashed:block/two_slightly_cracked_velociraptor_eggs",
+        "y": 270
+      }
+    ],
+    "eggs=2,hatch=2": [
+      {
+        "model": "fossilsunleashed:block/two_very_cracked_velociraptor_eggs"
+      },
+      {
+        "model": "fossilsunleashed:block/two_very_cracked_velociraptor_eggs",
+        "y": 90
+      },
+      {
+        "model": "fossilsunleashed:block/two_very_cracked_velociraptor_eggs",
+        "y": 180
+      },
+      {
+        "model": "fossilsunleashed:block/two_very_cracked_velociraptor_eggs",
+        "y": 270
+      }
+    ],
+    "eggs=3,hatch=0": [
+      {
+        "model": "fossilsunleashed:block/three_velociraptor_eggs"
+      },
+      {
+        "model": "fossilsunleashed:block/three_velociraptor_eggs",
+        "y": 90
+      },
+      {
+        "model": "fossilsunleashed:block/three_velociraptor_eggs",
+        "y": 180
+      },
+      {
+        "model": "fossilsunleashed:block/three_velociraptor_eggs",
+        "y": 270
+      }
+    ],
+    "eggs=3,hatch=1": [
+      {
+        "model": "fossilsunleashed:block/three_slightly_cracked_velociraptor_eggs"
+      },
+      {
+        "model": "fossilsunleashed:block/three_slightly_cracked_velociraptor_eggs",
+        "y": 90
+      },
+      {
+        "model": "fossilsunleashed:block/three_slightly_cracked_velociraptor_eggs",
+        "y": 180
+      },
+      {
+        "model": "fossilsunleashed:block/three_slightly_cracked_velociraptor_eggs",
+        "y": 270
+      }
+    ],
+    "eggs=3,hatch=2": [
+      {
+        "model": "fossilsunleashed:block/three_very_cracked_velociraptor_eggs"
+      },
+      {
+        "model": "fossilsunleashed:block/three_very_cracked_velociraptor_eggs",
+        "y": 90
+      },
+      {
+        "model": "fossilsunleashed:block/three_very_cracked_velociraptor_eggs",
+        "y": 180
+      },
+      {
+        "model": "fossilsunleashed:block/three_very_cracked_velociraptor_eggs",
+        "y": 270
+      }
+    ]
+  }
+}

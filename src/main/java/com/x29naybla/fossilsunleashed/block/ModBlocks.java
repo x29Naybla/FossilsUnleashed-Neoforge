@@ -1,11 +1,14 @@
 package com.x29naybla.fossilsunleashed.block;
 
 import com.x29naybla.fossilsunleashed.FossilsUnleashed;
+import com.x29naybla.fossilsunleashed.block.custom.VelociraptorEggBlock;
 import com.x29naybla.fossilsunleashed.item.ModItems;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredBlock;
 import net.neoforged.neoforge.registries.DeferredRegister;
@@ -15,6 +18,8 @@ import java.util.function.Supplier;
 public class ModBlocks {
     public static final DeferredRegister.Blocks BLOCKS = DeferredRegister.createBlocks(FossilsUnleashed.MOD_ID);
 
+    public static final DeferredBlock<Block> VELOCIRAPTOR_EGG = registerBlock("velociraptor_egg",
+            () -> new VelociraptorEggBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.TURTLE_EGG)));
 
     private static <T extends Block> DeferredBlock<T> registerBlock(String name, Supplier<T> block){
         DeferredBlock<T> toReturn = BLOCKS.register(name, block);

@@ -1,11 +1,21 @@
 package com.x29naybla.fossilsunleashed.entity;
 
+import com.x29naybla.fossilsunleashed.block.ModBlocks;
+import com.x29naybla.fossilsunleashed.block.custom.VelociraptorEggBlock;
 import com.x29naybla.fossilsunleashed.registry.EntityRegistry;
 import com.x29naybla.fossilsunleashed.util.ModTags;
+import net.minecraft.advancements.CriteriaTriggers;
+import net.minecraft.core.BlockPos;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.SyncedDataHolder;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.stats.Stats;
+import net.minecraft.util.RandomSource;
 import net.minecraft.util.TimeUtil;
 import net.minecraft.util.valueproviders.UniformInt;
 import net.minecraft.world.InteractionHand;
@@ -14,13 +24,22 @@ import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.*;
 import net.minecraft.world.entity.ai.goal.target.*;
-import net.minecraft.world.entity.ai.targeting.TargetingConditions;
 import net.minecraft.world.entity.animal.*;
-import net.minecraft.world.entity.monster.AbstractSkeleton;
+import net.minecraft.world.entity.animal.horse.AbstractHorse;
+import net.minecraft.world.entity.decoration.ArmorStand;
+import net.minecraft.world.entity.monster.Creeper;
+import net.minecraft.world.entity.monster.Ghast;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.*;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelReader;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.TurtleEggBlock;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.gameevent.GameEvent;
 import org.jetbrains.annotations.Nullable;
 import software.bernie.geckolib.animatable.GeoEntity;
 import software.bernie.geckolib.animatable.instance.AnimatableInstanceCache;
@@ -45,6 +64,9 @@ public class VelociraptorEntity extends TamableAnimal implements NeutralMob, Geo
     public static final Predicate<LivingEntity> PREY_SELECTOR;
     private static final UniformInt PERSISTENT_ANGER_TIME;
     private static final EntityDataAccessor<Integer> DATA_REMAINING_ANGER_TIME;
+    private static final EntityDataAccessor<Boolean> HAS_EGG = SynchedEntityData.defineId(VelociraptorEntity.class, EntityDataSerializers.BOOLEAN);
+    private static final EntityDataAccessor<Boolean> LAYING_EGG = SynchedEntityData.defineId(VelociraptorEntity.class, EntityDataSerializers.BOOLEAN);
+    int layEggCounter;
 
     @javax.annotation.Nullable
     private UUID persistentAngerTarget;
@@ -80,14 +102,14 @@ public class VelociraptorEntity extends TamableAnimal implements NeutralMob, Geo
 
     protected void registerGoals(){
         this.goalSelector.addGoal(1, new FloatGoal(this));
-        this.goalSelector.addGoal(1, new PanicGoal(this, 1.5F));
+        this.goalSelector.addGoal(1, new PanicGoal(this, 1.3F));
+        this.goalSelector.addGoal(1, new VelociraptorBreedGoal(this, 1.0));
+        this.goalSelector.addGoal(2, new VelociraptorLayEggGoal(this, 1.0));
         this.goalSelector.addGoal(2, new SitWhenOrderedToGoal(this));
         this.goalSelector.addGoal(3, new SleepGoal());
         this.goalSelector.addGoal(3, new LeapAtTargetGoal(this, 0.4F));
-        this.goalSelector.addGoal(4, new MeleeAttackGoal(this, 1.0, true));
-        this.goalSelector.addGoal(4, new FollowParentGoal(this,1f));
+        this.goalSelector.addGoal(4, new MeleeAttackGoal(this, 1.1, true));
         this.goalSelector.addGoal(5, new FollowOwnerGoal(this, 1.0, 10.0F, 2.0F));
-        this.goalSelector.addGoal(6, new BreedGoal(this, 1.0));
         this.goalSelector.addGoal(7, new WaterAvoidingRandomStrollGoal(this, 1.0));
         this.goalSelector.addGoal(8, new LookAtPlayerGoal(this, Player.class, 8.0F));
         this.goalSelector.addGoal(8, new RandomLookAroundGoal(this));
@@ -96,8 +118,7 @@ public class VelociraptorEntity extends TamableAnimal implements NeutralMob, Geo
         this.targetSelector.addGoal(3, (new HurtByTargetGoal(this, new Class[0])).setAlertOthers(new Class[0]));
         this.targetSelector.addGoal(4, new NearestAttackableTargetGoal(this, Player.class, 10, true, false, target -> isAngryAt((LivingEntity) target)));
         this.targetSelector.addGoal(5, new NonTameRandomTargetGoal(this, Animal.class, false, PREY_SELECTOR));
-        this.targetSelector.addGoal(7, new NearestAttackableTargetGoal(this, AbstractSkeleton.class, false));
-        this.targetSelector.addGoal(8, new ResetUniversalAngerTargetGoal(this, true));
+        this.targetSelector.addGoal(6, new ResetUniversalAngerTargetGoal(this, true));
     }
 
     @Override
@@ -156,10 +177,22 @@ public class VelociraptorEntity extends TamableAnimal implements NeutralMob, Geo
     }
 
     @Override
+    public void aiStep() {
+        super.aiStep();
+        if (this.isAlive() && this.isLayingEgg() && this.layEggCounter >= 1 && this.layEggCounter % 5 == 0) {
+            BlockPos blockpos = this.blockPosition();
+            if (VelociraptorEggBlock.onSand(this.level(), blockpos)) {
+                this.level().levelEvent(2001, blockpos, Block.getId(this.level().getBlockState(blockpos.below())));
+                this.gameEvent(GameEvent.ENTITY_ACTION);
+            }
+        }
+    }
+
+    @Override
     public void customServerAiStep() {
         if (this.getMoveControl().hasWanted()) {
-            this.setSprinting(this.getMoveControl().getSpeedModifier() >= 1.5D);
-        } else {
+            this.setSprinting(this.getMoveControl().getSpeedModifier() >= 1.1);
+        }else {
             this.setSprinting(false);
         }
         super.customServerAiStep();
@@ -175,9 +208,28 @@ public class VelociraptorEntity extends TamableAnimal implements NeutralMob, Geo
         this.setSleeping(false);
     }
 
+    public boolean hasEgg() {
+        return this.entityData.get(HAS_EGG);
+    }
+
+    void setHasEgg(boolean hasEgg) {
+        this.entityData.set(HAS_EGG, hasEgg);
+    }
+
+    public boolean isLayingEgg() {
+        return this.entityData.get(LAYING_EGG);
+    }
+
+    void setLayingEgg(boolean isLayingEgg) {
+        this.layEggCounter = isLayingEgg ? 1 : 0;
+        this.entityData.set(LAYING_EGG, isLayingEgg);
+    }
+
     protected void defineSynchedData(SynchedEntityData.Builder builder) {
         super.defineSynchedData(builder);
         builder.define(DATA_REMAINING_ANGER_TIME, 0);
+        builder.define(HAS_EGG, false);
+        builder.define(LAYING_EGG, false);
     }
 
     public boolean isSleeping() {
@@ -247,6 +299,77 @@ public class VelociraptorEntity extends TamableAnimal implements NeutralMob, Geo
         return velociraptor;
     }
 
+    public boolean wantsToAttack(LivingEntity target, LivingEntity owner) {
+        if (!(target instanceof Creeper) && !(target instanceof Ghast) && !(target instanceof ArmorStand)) {
+            if (!(target instanceof VelociraptorEntity)) {
+                if (target instanceof Player) {
+                    Player player = (Player)target;
+                    if (owner instanceof Player) {
+                        Player player1 = (Player)owner;
+                        if (!player1.canHarmPlayer(player)) {
+                            return false;
+                        }
+                    }
+                }
+
+                if (target instanceof AbstractHorse) {
+                    AbstractHorse abstracthorse = (AbstractHorse)target;
+                    if (abstracthorse.isTamed()) {
+                        return false;
+                    }
+                }
+
+                if (target instanceof TamableAnimal) {
+                    TamableAnimal tamableanimal = (TamableAnimal)target;
+                    if (tamableanimal.isTame()) {
+                        return false;
+                    }
+                }
+
+                return true;
+            } else {
+                VelociraptorEntity velociraptor = (VelociraptorEntity)target;
+                return !velociraptor.isTame() || velociraptor.getOwner() != owner;
+            }
+        } else {
+            return false;
+        }
+    }
+
+    static {
+        DATA_REMAINING_ANGER_TIME = SynchedEntityData.defineId(VelociraptorEntity.class, EntityDataSerializers.INT);
+        PREY_SELECTOR = (p_348295_) -> {
+            EntityType<?> entitytype = p_348295_.getType();
+            return entitytype == EntityType.CHICKEN || entitytype == EntityType.RABBIT || entitytype == EntityType.ARMADILLO;
+        };
+        PERSISTENT_ANGER_TIME = TimeUtil.rangeOfSeconds(20, 39);
+    }
+
+    @Override
+    public int getRemainingPersistentAngerTime() {
+        return (Integer)this.entityData.get(DATA_REMAINING_ANGER_TIME);
+    }
+
+    @Override
+    public void setRemainingPersistentAngerTime(int time) {
+        this.entityData.set(DATA_REMAINING_ANGER_TIME, time);
+    }
+
+    @Override
+    public @Nullable UUID getPersistentAngerTarget() {
+        return this.persistentAngerTarget;
+    }
+
+    @Override
+    public void setPersistentAngerTarget(@Nullable UUID target) {
+        this.persistentAngerTarget = target;
+    }
+
+    @Override
+    public void startPersistentAngerTimer() {
+        this.setRemainingPersistentAngerTime(PERSISTENT_ANGER_TIME.sample(this.random));
+    }
+
     private class SleepGoal extends Goal {
         private final int WAIT_TIME_BEFORE_SLEEP = random.nextInt(100) + 100;
         private int countdown;
@@ -292,37 +415,93 @@ public class VelociraptorEntity extends TamableAnimal implements NeutralMob, Geo
         }
     }
 
-    static {
-        DATA_REMAINING_ANGER_TIME = SynchedEntityData.defineId(VelociraptorEntity.class, EntityDataSerializers.INT);
-        PREY_SELECTOR = (p_348295_) -> {
-            EntityType<?> entitytype = p_348295_.getType();
-            return entitytype == EntityType.CHICKEN || entitytype == EntityType.RABBIT || entitytype == EntityType.ARMADILLO;
-        };
-        PERSISTENT_ANGER_TIME = TimeUtil.rangeOfSeconds(20, 39);
+    static class VelociraptorBreedGoal extends BreedGoal {
+        private final VelociraptorEntity velociraptor;
+
+        VelociraptorBreedGoal(VelociraptorEntity velociraptor, double speedModifier) {
+            super(velociraptor, speedModifier);
+            this.velociraptor = velociraptor;
+        }
+
+        @Override
+        public boolean canUse() {
+            return super.canUse() && !this.velociraptor.hasEgg();
+        }
+
+        @Override
+        protected void breed() {
+            ServerPlayer serverplayer = this.animal.getLoveCause();
+            if (serverplayer == null && this.partner.getLoveCause() != null) {
+                serverplayer = this.partner.getLoveCause();
+            }
+
+            if (serverplayer != null) {
+                serverplayer.awardStat(Stats.ANIMALS_BRED);
+                CriteriaTriggers.BRED_ANIMALS.trigger(serverplayer, this.animal, this.partner, null);
+            }
+
+            this.velociraptor.setHasEgg(true);
+            this.animal.setAge(6000);
+            this.partner.setAge(6000);
+            this.animal.resetLove();
+            this.partner.resetLove();
+            RandomSource randomsource = this.animal.getRandom();
+            if (this.level.getGameRules().getBoolean(GameRules.RULE_DOMOBLOOT)) {
+                this.level
+                        .addFreshEntity(new ExperienceOrb(this.level, this.animal.getX(), this.animal.getY(), this.animal.getZ(), randomsource.nextInt(7) + 1));
+            }
+        }
     }
 
-    @Override
-    public int getRemainingPersistentAngerTime() {
-        return (Integer)this.entityData.get(DATA_REMAINING_ANGER_TIME);
-    }
+    static class VelociraptorLayEggGoal extends MoveToBlockGoal {
+        private final VelociraptorEntity velociraptor;
 
-    @Override
-    public void setRemainingPersistentAngerTime(int time) {
-        this.entityData.set(DATA_REMAINING_ANGER_TIME, time);
-    }
+        VelociraptorLayEggGoal(VelociraptorEntity velociraptor, double speedModifier) {
+            super(velociraptor, speedModifier, 16);
+            this.velociraptor = velociraptor;
+        }
 
-    @Override
-    public @Nullable UUID getPersistentAngerTarget() {
-        return this.persistentAngerTarget;
-    }
+        @Override
+        public boolean canUse() {
+            return this.velociraptor.hasEgg() ? super.canUse() : false;
+        }
 
-    @Override
-    public void setPersistentAngerTarget(@Nullable UUID target) {
-        this.persistentAngerTarget = target;
-    }
+        @Override
+        public boolean canContinueToUse() {
+            return super.canContinueToUse() && this.velociraptor.hasEgg();
+        }
 
-    @Override
-    public void startPersistentAngerTimer() {
-        this.setRemainingPersistentAngerTime(PERSISTENT_ANGER_TIME.sample(this.random));
+        @Override
+        public void tick() {
+            super.tick();
+            BlockPos blockpos = this.velociraptor.blockPosition();
+            if (!this.velociraptor.isInWater() && this.isReachedTarget()) {
+                if (this.velociraptor.layEggCounter < 1) {
+                    this.velociraptor.setLayingEgg(true);
+                } else if (this.velociraptor.layEggCounter > this.adjustedTickDelay(200)) {
+                    Level level = this.velociraptor.level();
+                    level.playSound(null, blockpos, SoundEvents.TURTLE_LAY_EGG, SoundSource.BLOCKS, 0.3F, 0.9F + level.random.nextFloat() * 0.2F);
+                    BlockPos blockpos1 = this.blockPos.above();
+                    BlockState blockstate = ModBlocks.VELOCIRAPTOR_EGG.get().defaultBlockState().setValue(TurtleEggBlock.EGGS, Integer.valueOf(this.velociraptor.random.nextInt(3) + 1));
+                    level.setBlock(blockpos1, blockstate, 3);
+                    level.gameEvent(GameEvent.BLOCK_PLACE, blockpos1, GameEvent.Context.of(this.velociraptor, blockstate));
+                    this.velociraptor.setHasEgg(false);
+                    this.velociraptor.setLayingEgg(false);
+                    this.velociraptor.setInLoveTime(600);
+                }
+
+                if (this.velociraptor.isLayingEgg()) {
+                    this.velociraptor.layEggCounter++;
+                }
+            }
+        }
+
+        /**
+         * Return {@code true} to set given position as destination
+         */
+        @Override
+        protected boolean isValidTarget(LevelReader level, BlockPos pos) {
+            return !level.isEmptyBlock(pos.above()) ? false : VelociraptorEggBlock.isSand(level, pos);
+        }
     }
 }
