@@ -101,10 +101,10 @@ public class VelociraptorEntity extends TamableAnimal implements NeutralMob, Geo
     }
 
     protected void registerGoals(){
+        this.goalSelector.addGoal(0, new VelociraptorLayEggGoal(this, 1.0));
         this.goalSelector.addGoal(1, new FloatGoal(this));
         this.goalSelector.addGoal(1, new PanicGoal(this, 1.3F));
         this.goalSelector.addGoal(1, new VelociraptorBreedGoal(this, 1.0));
-        this.goalSelector.addGoal(2, new VelociraptorLayEggGoal(this, 1.0));
         this.goalSelector.addGoal(2, new SitWhenOrderedToGoal(this));
         this.goalSelector.addGoal(3, new SleepGoal());
         this.goalSelector.addGoal(3, new LeapAtTargetGoal(this, 0.4F));

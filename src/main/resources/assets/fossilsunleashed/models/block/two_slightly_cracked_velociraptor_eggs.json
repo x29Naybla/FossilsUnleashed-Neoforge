@@ -1,0 +1,44 @@
+{
+	"textures": {
+		"1": "fossilsunleashed:block/slightly_cracked_velociraptor_egg",
+		"particle": "fossilsunleashed:block/slightly_cracked_velociraptor_egg"
+	},
+	"elements": [
+		{
+			"name": "egg",
+			"from": [4, 0, 8],
+			"to": [7, 5, 11],
+			"rotation": {"angle": 0, "axis": "y", "origin": [5, 0, 10]},
+			"faces": {
+				"north": {"uv": [3, 3, 6, 8], "texture": "#1"},
+				"east": {"uv": [0, 3, 3, 8], "texture": "#1"},
+				"south": {"uv": [9, 3, 12, 8], "texture": "#1"},
+				"west": {"uv": [6, 3, 9, 8], "texture": "#1"},
+				"up": {"uv": [6, 3, 3, 0], "texture": "#1"},
+				"down": {"uv": [9, 0, 6, 3], "texture": "#1"}
+			}
+		},
+		{
+			"name": "egg",
+			"from": [9, 0, 5],
+			"to": [12, 5, 8],
+			"rotation": {"angle": 0, "axis": "y", "origin": [11, 0, 7]},
+			"faces": {
+				"north": {"uv": [0, 3, 3, 8], "texture": "#1"},
+				"east": {"uv": [9, 3, 12, 8], "texture": "#1"},
+				"south": {"uv": [6, 3, 9, 8], "texture": "#1"},
+				"west": {"uv": [3, 3, 6, 8], "texture": "#1"},
+				"up": {"uv": [6, 3, 3, 0], "rotation": 270, "texture": "#1"},
+				"down": {"uv": [9, 0, 6, 3], "rotation": 90, "texture": "#1"}
+			}
+		}
+	],
+	"groups": [
+		{
+			"name": "egg",
+			"origin": [8, 8, 8],
+			"color": 0,
+			"children": [0, 1]
+		}
+	]
+}
