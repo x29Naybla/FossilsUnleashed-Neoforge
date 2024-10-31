@@ -1,0 +1,9 @@
+// 1.21.1	2024-10-31T17:42:39.206853	Tags for minecraft:item mod id fossilsunleashed
+4b93e70293be866cd317abbf2cb5e72149997cb3 data/c/tags/item/eggs.json
+7bfe33402f8c74ac13046405d22c88e01138c0db data/c/tags/item/foods/cooked_meat.json
+5cf9a95e9a7d05205be0046cda35f6968157d312 data/c/tags/item/foods/food_poisoning.json
+5cf9a95e9a7d05205be0046cda35f6968157d312 data/c/tags/item/foods/raw_meat.json
+79edda99bb36413a9c04882fd3d817218e98a381 data/fossilsunleashed/tags/item/biomass.json
+0d9bf2834b0b3e82b07ce73fd12caa23b2837782 data/fossilsunleashed/tags/item/dodo_food.json
+1dd876ca3fd1a6feff33d8b848e59ff7709137b0 data/fossilsunleashed/tags/item/velociraptor_food.json
+6882ae9700b50bc715eaca855d99ca1dd1a3df77 data/minecraft/tags/item/meat.json

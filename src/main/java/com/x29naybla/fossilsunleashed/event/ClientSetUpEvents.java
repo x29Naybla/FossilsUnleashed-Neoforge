@@ -14,7 +14,7 @@ public class ClientSetUpEvents {
 
     @SubscribeEvent
     public static void onRegisterRenderers(EntityRenderersEvent.RegisterRenderers event) {
-        event.registerEntityRenderer(EntityRegistry.VELOCIRAPTOR.get(), VelociraptorRenderer::new);
         event.registerEntityRenderer(EntityRegistry.DODO.get(), DodoRenderer::new);
+        event.registerEntityRenderer(EntityRegistry.VELOCIRAPTOR.get(), VelociraptorRenderer::new);
     }
 }

@@ -19,13 +19,16 @@ public class ModCreativeModeTabs {
             () -> CreativeModeTab.builder().icon(() -> new ItemStack(ModItems.FOSSIL.get()))
                     .title(Component.translatable("creativetab.fossilsunleashed.items"))
                     .displayItems((itemDisplayParameters, output) -> {
-                        output.accept(ModItems.FOSSIL);
                         output.accept(ModItems.CAMBRIAN_FOSSIL);
                         output.accept(ModItems.TRIASSIC_ANIMAL_FOSSIL);
                         output.accept(ModItems.JURASSIC_ANIMAL_FOSSIL);
                         output.accept(ModItems.CRETACEOUS_ANIMAL_FOSSIL);
-                        output.accept(ModItems.DNA);
+                        output.accept(ModItems.DODO_DNA);
                         output.accept(ModItems.VELOCIRAPTOR_DNA);
+                        output.accept(ModItems.DODO_EGG);
+                        output.accept(ModItems.VELOCIRAPTOR);
+                        output.accept(ModItems.COOKED_VELOCIRAPTOR);
+                        output.accept(ModItems.DODO_SPAWN_EGG);
                         output.accept(ModItems.VELOCIRAPTOR_SPAWN_EGG);
 
                     }).build());

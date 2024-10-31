@@ -20,23 +20,23 @@ import net.neoforged.neoforge.registries.DeferredRegister;
 public class EntityRegistry {
     public static final DeferredRegister<EntityType<?>> ENTITY_TYPES = DeferredRegister.create(Registries.ENTITY_TYPE, FossilsUnleashed.MOD_ID);
 
-    public static final DeferredHolder<EntityType<?>, EntityType<VelociraptorEntity>> VELOCIRAPTOR = register("velociraptor", VelociraptorEntity::new, 0.4f, 0.7f);
     public static final DeferredHolder<EntityType<?>, EntityType<DodoEntity>> DODO = register("dodo", DodoEntity::new, 0.4f, 0.7f);
+    public static final DeferredHolder<EntityType<?>, EntityType<VelociraptorEntity>> VELOCIRAPTOR = register("velociraptor", VelociraptorEntity::new, 0.4f, 0.7f);
 
     @SubscribeEvent
     public static void registerEntityAttributes(EntityAttributeCreationEvent event) {
+        AttributeSupplier.Builder dodoAttributes = PathfinderMob.createMobAttributes()
+                .add(Attributes.MOVEMENT_SPEED,0.25)
+                .add(Attributes.MAX_HEALTH, 6);
+
         AttributeSupplier.Builder velociraptorAttributes = PathfinderMob.createMobAttributes()
                 .add(Attributes.FOLLOW_RANGE, 16)
                 .add(Attributes.MOVEMENT_SPEED, 0.3)
                 .add(Attributes.ATTACK_DAMAGE,4)
                 .add(Attributes.MAX_HEALTH, 8);
 
-        AttributeSupplier.Builder dodoAttributes = PathfinderMob.createMobAttributes()
-                .add(Attributes.MOVEMENT_SPEED,0.25)
-                .add(Attributes.MAX_HEALTH, 6);
-
-        event.put(EntityRegistry.VELOCIRAPTOR.get(), velociraptorAttributes.build());
         event.put(EntityRegistry.DODO.get(), dodoAttributes.build());
+        event.put(EntityRegistry.VELOCIRAPTOR.get(), velociraptorAttributes.build());
     }
 
     private static <T extends Mob> DeferredHolder<EntityType<?>, EntityType<T>> register(String name, EntityType.EntityFactory<T> entity, float width, float height) {

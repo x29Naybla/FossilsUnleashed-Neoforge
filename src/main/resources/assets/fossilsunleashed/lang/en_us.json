@@ -1,19 +1,22 @@
 {
-  "item.fossilsunleashed.fossil": "Fossil",
-  "item.fossilsunleashed.dna": "DNA",
-
   "item.fossilsunleashed.cambrian_fossil": "Cambrian Fossil",
   "item.fossilsunleashed.triassic_animal_fossil": "Triassic Animal Fossil",
   "item.fossilsunleashed.jurassic_animal_fossil": "Jurassic Animal Fossil",
   "item.fossilsunleashed.cretaceous_animal_fossil": "Cretaceous Animal Fossil",
 
+  "item.fossilsunleashed.dodo_dna": "Dodo DNA",
   "item.fossilsunleashed.velociraptor_dna": "Velociraptor DNA",
 
-  "entity.fossilsunleashed.velociraptor": "Velociraptor",
+  "item.fossilsunleashed.dodo_egg": "Dodo Egg",
+  "item.fossilsunleashed.velociraptor": "Raw Velociraptor",
+  "item.fossilsunleashed.cooked_velociraptor": "Cooked Velociraptor",
+
   "entity.fossilsunleashed.dodo": "Dodo",
+  "entity.fossilsunleashed.velociraptor": "Velociraptor",
 
   "block.fossilsunleashed.velociraptor_egg": "Velociraptor Egg",
 
+  "item.fossilsunleashed.dodo_spawn_egg": "Dodo Spawn Egg",
   "item.fossilsunleashed.velociraptor_spawn_egg": "Velociraptor Spawn Egg",
 
   "creativetab.fossilsunleashed.items": "Fossils Unleashed Items",

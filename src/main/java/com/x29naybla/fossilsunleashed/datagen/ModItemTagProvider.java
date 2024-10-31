@@ -7,7 +7,6 @@ import com.x29naybla.fossilsunleashed.util.ModTags;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.tags.ItemTagsProvider;
-import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.level.block.Block;
 import net.neoforged.neoforge.common.Tags;
@@ -25,12 +24,6 @@ public class ModItemTagProvider extends ItemTagsProvider {
     @Override
     protected void addTags(HolderLookup.Provider provider) {
         //Fossils Unleashed Tags
-        tag(ModTags.Items.VELOCIRAPTOR_FOOD)
-                .addTag(ItemTags.WOLF_FOOD);
-
-        tag(ModTags.Items.DODO_FOOD)
-                .addTag(ItemTags.CHICKEN_FOOD);
-
         tag(ModTags.Items.BIOMASS)
                 .addTag(Tags.Items.FOODS)
                 .addTag(Tags.Items.ANIMAL_FOODS)
@@ -41,8 +34,29 @@ public class ModItemTagProvider extends ItemTagsProvider {
                 .addTag(Tags.Items.EGGS)
                 .addTag(Tags.Items.MUSHROOMS);
 
+        tag(ModTags.Items.DODO_FOOD)
+                .addTag(ItemTags.CHICKEN_FOOD);
+
+        tag(ModTags.Items.VELOCIRAPTOR_FOOD)
+                .addTag(ItemTags.WOLF_FOOD);
+
         //Neoforge Tags
         tag(Tags.Items.EGGS)
+                .add(ModItems.DODO_EGG.get())
                 .add(ModBlocks.VELOCIRAPTOR_EGG.asItem());
+
+        tag(Tags.Items.FOODS_RAW_MEAT)
+                .add(ModItems.VELOCIRAPTOR.get());
+
+        tag(Tags.Items.FOODS_COOKED_MEAT)
+                .add(ModItems.COOKED_VELOCIRAPTOR.get());
+
+        tag(Tags.Items.FOODS_FOOD_POISONING)
+                .add(ModItems.VELOCIRAPTOR.get());
+
+        //Minecraft Tags
+        tag(ItemTags.MEAT)
+                .add(ModItems.VELOCIRAPTOR.get())
+                .add(ModItems.COOKED_VELOCIRAPTOR.get());
     }
 }

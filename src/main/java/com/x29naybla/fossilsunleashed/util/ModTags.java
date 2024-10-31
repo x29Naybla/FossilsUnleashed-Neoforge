@@ -26,9 +26,10 @@ public class ModTags {
 
     public static class Items {
         //FossilsUnleashed Tags
-        public static final TagKey<Item> VELOCIRAPTOR_FOOD = createTag("velociraptor_food");
-        public static final TagKey<Item> DODO_FOOD = createTag("dodo_food");
         public static final TagKey<Item> BIOMASS = createTag("biomass");
+
+        public static final TagKey<Item> DODO_FOOD = createTag("dodo_food");
+        public static final TagKey<Item> VELOCIRAPTOR_FOOD = createTag("velociraptor_food");
 
         private static TagKey<Item> createTag(String name){
             return ItemTags.create(ResourceLocation.fromNamespaceAndPath(FossilsUnleashed.MOD_ID, name));
