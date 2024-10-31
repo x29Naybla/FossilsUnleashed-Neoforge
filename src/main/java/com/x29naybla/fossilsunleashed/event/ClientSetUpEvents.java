@@ -1,6 +1,7 @@
 package com.x29naybla.fossilsunleashed.event;
 
 import com.x29naybla.fossilsunleashed.FossilsUnleashed;
+import com.x29naybla.fossilsunleashed.client.renderer.entity.DodoRenderer;
 import com.x29naybla.fossilsunleashed.client.renderer.entity.VelociraptorRenderer;
 import com.x29naybla.fossilsunleashed.registry.EntityRegistry;
 import net.neoforged.api.distmarker.Dist;
@@ -14,6 +15,6 @@ public class ClientSetUpEvents {
     @SubscribeEvent
     public static void onRegisterRenderers(EntityRenderersEvent.RegisterRenderers event) {
         event.registerEntityRenderer(EntityRegistry.VELOCIRAPTOR.get(), VelociraptorRenderer::new);
-
+        event.registerEntityRenderer(EntityRegistry.DODO.get(), DodoRenderer::new);
     }
 }

@@ -2,7 +2,15 @@
   "item.fossilsunleashed.fossil": "Fossil",
   "item.fossilsunleashed.dna": "DNA",
 
+  "item.fossilsunleashed.cambrian_fossil": "Cambrian Fossil",
+  "item.fossilsunleashed.triassic_animal_fossil": "Triassic Animal Fossil",
+  "item.fossilsunleashed.jurassic_animal_fossil": "Jurassic Animal Fossil",
+  "item.fossilsunleashed.cretaceous_animal_fossil": "Cretaceous Animal Fossil",
+
+  "item.fossilsunleashed.velociraptor_dna": "Velociraptor DNA",
+
   "entity.fossilsunleashed.velociraptor": "Velociraptor",
+  "entity.fossilsunleashed.dodo": "Dodo",
 
   "block.fossilsunleashed.velociraptor_egg": "Velociraptor Egg",
 

@@ -101,18 +101,21 @@ public class VelociraptorEntity extends TamableAnimal implements NeutralMob, Geo
     }
 
     protected void registerGoals(){
-        this.goalSelector.addGoal(0, new VelociraptorLayEggGoal(this, 1.0));
-        this.goalSelector.addGoal(1, new FloatGoal(this));
-        this.goalSelector.addGoal(1, new PanicGoal(this, 1.3F));
+        this.goalSelector.addGoal(0, new FloatGoal(this));
         this.goalSelector.addGoal(1, new VelociraptorBreedGoal(this, 1.0));
-        this.goalSelector.addGoal(2, new SitWhenOrderedToGoal(this));
-        this.goalSelector.addGoal(3, new SleepGoal());
-        this.goalSelector.addGoal(3, new LeapAtTargetGoal(this, 0.4F));
-        this.goalSelector.addGoal(4, new MeleeAttackGoal(this, 1.1, true));
+        this.goalSelector.addGoal(1, new VelociraptorLayEggGoal(this, 1.0));
+        this.goalSelector.addGoal(2, new TemptGoal(this, 1, (p_335679_) -> {
+            return p_335679_.is(ModTags.Items.VELOCIRAPTOR_FOOD);
+        }, false));
+        this.goalSelector.addGoal(2, new LeapAtTargetGoal(this, 0.4F));
+        this.goalSelector.addGoal(2, new MeleeAttackGoal(this, 1.1, true));
+        this.goalSelector.addGoal(3, new SitWhenOrderedToGoal(this));
+        this.goalSelector.addGoal(3, new PanicGoal(this, 1.3F));
+        this.goalSelector.addGoal(4, new SleepGoal());
         this.goalSelector.addGoal(5, new FollowOwnerGoal(this, 1.0, 10.0F, 2.0F));
-        this.goalSelector.addGoal(7, new WaterAvoidingRandomStrollGoal(this, 1.0));
-        this.goalSelector.addGoal(8, new LookAtPlayerGoal(this, Player.class, 8.0F));
-        this.goalSelector.addGoal(8, new RandomLookAroundGoal(this));
+        this.goalSelector.addGoal(6, new WaterAvoidingRandomStrollGoal(this, 1.0));
+        this.goalSelector.addGoal(7, new LookAtPlayerGoal(this, Player.class, 8.0F));
+        this.goalSelector.addGoal(7, new RandomLookAroundGoal(this));
         this.targetSelector.addGoal(1, new OwnerHurtByTargetGoal(this));
         this.targetSelector.addGoal(2, new OwnerHurtTargetGoal(this));
         this.targetSelector.addGoal(3, (new HurtByTargetGoal(this, new Class[0])).setAlertOthers(new Class[0]));
@@ -198,11 +201,6 @@ public class VelociraptorEntity extends TamableAnimal implements NeutralMob, Geo
         super.customServerAiStep();
     }
 
-    @Override
-    public boolean isFood(ItemStack itemStack) {
-        return FOOD_ITEMS.test(itemStack);
-    }
-
     void clearStates() {
         this.setInSittingPose(false);
         this.setSleeping(false);
@@ -271,32 +269,14 @@ public class VelociraptorEntity extends TamableAnimal implements NeutralMob, Geo
 
     }
 
-    public boolean canMate(Animal otherAnimal) {
-        if (otherAnimal == this) {
-            return false;
-        } else if (!this.isTame()) {
-            return false;
-        } else if (otherAnimal instanceof VelociraptorEntity) {
-            VelociraptorEntity velociraptor = (VelociraptorEntity)otherAnimal;
-            if (!velociraptor.isTame()) {
-                return false;
-            } else {
-                return velociraptor.isInSittingPose() ? false : this.isInLove() && velociraptor.isInLove();
-            }
-        } else {
-            return false;
-        }
+    @Override
+    public @Nullable AgeableMob getBreedOffspring(ServerLevel serverLevel, AgeableMob ageableMob) {
+        return (VelociraptorEntity) EntityRegistry.VELOCIRAPTOR.get().create(level());
     }
 
     @Override
-    public @Nullable AgeableMob getBreedOffspring(ServerLevel serverLevel, AgeableMob ageableMob) {
-        VelociraptorEntity velociraptor = (VelociraptorEntity) EntityRegistry.VELOCIRAPTOR.get().create(level());
-        if (this.isTame()) {
-            velociraptor.setOwnerUUID(this.getOwnerUUID());
-            velociraptor.setTame(true, true);
-        }
-
-        return velociraptor;
+    public boolean isFood(ItemStack itemStack) {
+        return FOOD_ITEMS.test(itemStack);
     }
 
     public boolean wantsToAttack(LivingEntity target, LivingEntity owner) {

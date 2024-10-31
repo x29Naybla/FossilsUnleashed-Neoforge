@@ -1,6 +1,8 @@
 package com.x29naybla.fossilsunleashed.datagen;
 
 import com.x29naybla.fossilsunleashed.FossilsUnleashed;
+import com.x29naybla.fossilsunleashed.block.ModBlocks;
+import com.x29naybla.fossilsunleashed.item.ModItems;
 import com.x29naybla.fossilsunleashed.util.ModTags;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
@@ -26,6 +28,9 @@ public class ModItemTagProvider extends ItemTagsProvider {
         tag(ModTags.Items.VELOCIRAPTOR_FOOD)
                 .addTag(ItemTags.WOLF_FOOD);
 
+        tag(ModTags.Items.DODO_FOOD)
+                .addTag(ItemTags.CHICKEN_FOOD);
+
         tag(ModTags.Items.BIOMASS)
                 .addTag(Tags.Items.FOODS)
                 .addTag(Tags.Items.ANIMAL_FOODS)
@@ -35,5 +40,9 @@ public class ModItemTagProvider extends ItemTagsProvider {
                 .addTag(Tags.Items.CROPS)
                 .addTag(Tags.Items.EGGS)
                 .addTag(Tags.Items.MUSHROOMS);
+
+        //Neoforge Tags
+        tag(Tags.Items.EGGS)
+                .add(ModBlocks.VELOCIRAPTOR_EGG.asItem());
     }
 }
