@@ -2,14 +2,13 @@ package com.x29naybla.fossilsunleashed.entity;
 
 import com.x29naybla.fossilsunleashed.registry.EntityRegistry;
 import com.x29naybla.fossilsunleashed.util.ModTags;
-import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.tags.ItemTags;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.goal.*;
 import net.minecraft.world.entity.animal.Animal;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.Nullable;
@@ -23,6 +22,7 @@ import software.bernie.geckolib.util.GeckoLibUtil;
 public class DodoEntity extends Animal implements GeoEntity {
     protected static final RawAnimation IDLE = RawAnimation.begin().thenLoop("animation.dodo.idle");
     protected static final RawAnimation WALK = RawAnimation.begin().thenLoop("animation.dodo.walk");
+    protected static final RawAnimation RUN = RawAnimation.begin().thenLoop("animation.dodo.run");
     private final AnimatableInstanceCache geoCache = GeckoLibUtil.createInstanceCache(this);
 
     private static final Ingredient FOOD_ITEMS = Ingredient.of(ModTags.Items.DODO_FOOD);
@@ -38,6 +38,9 @@ public class DodoEntity extends Animal implements GeoEntity {
 
     protected <E extends DodoEntity> PlayState animController(final AnimationState<E> event) {
         if (event.isMoving()) {
+            if(isSprinting()){
+                event.setAnimation(RUN);
+            }else
             event.setAnimation(WALK);
         } else {
             event.setAnimation(IDLE);
@@ -50,12 +53,25 @@ public class DodoEntity extends Animal implements GeoEntity {
         this.goalSelector.addGoal(0, new FloatGoal(this));
         this.goalSelector.addGoal(1, new BreedGoal(this, 1.0));
         this.goalSelector.addGoal(2, new TemptGoal(this, 1, (p_335679_) -> {
+            return p_335679_.is(ModTags.Items.DODO_FAVORITES);
+        }, false));
+        this.goalSelector.addGoal(2, new TemptGoal(this, 1.3, (p_335679_) -> {
             return p_335679_.is(ModTags.Items.DODO_FOOD);
         }, false));
         this.goalSelector.addGoal(3, new FollowParentGoal(this, 1));
         this.goalSelector.addGoal(4, new WaterAvoidingRandomStrollGoal(this, 1.0));
         this.goalSelector.addGoal(5, new LookAtPlayerGoal(this, Player.class, 8.0F));
         this.goalSelector.addGoal(6, new RandomLookAroundGoal(this));
+    }
+
+    @Override
+    public void customServerAiStep() {
+        if (this.getMoveControl().hasWanted()) {
+            this.setSprinting(this.getMoveControl().getSpeedModifier() >= 1.3);
+        }else {
+            this.setSprinting(false);
+        }
+        super.customServerAiStep();
     }
 
     @Override
