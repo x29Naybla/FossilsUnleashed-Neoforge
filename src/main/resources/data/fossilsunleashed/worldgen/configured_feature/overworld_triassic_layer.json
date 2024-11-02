@@ -1,13 +1,13 @@
 {
   "type": "minecraft:ore",
   "config": {
-    "size": 10,
+    "size": 6,
     "discard_chance_on_air_exposure": 0,
     "targets": [
       {
         "target": {
-          "predicate_type": "minecraft:tag_match",
-          "tag": "minecraft:stone_ore_replaceables"
+          "predicate_type": "minecraft:block_match",
+          "block": "minecraft:stone"
         },
         "state": {
           "Name": "paleolib:suspicious_stone",
@@ -18,11 +18,71 @@
       },
       {
         "target": {
-          "predicate_type": "minecraft:tag_match",
-          "tag": "minecraft:deepslate_ore_replaceables"
+          "predicate_type": "minecraft:block_match",
+          "block": "minecraft:tuff"
+        },
+        "state": {
+          "Name": "paleolib:suspicious_tuff",
+          "Properties": {
+            "dusted": "0"
+          }
+        }
+      },
+      {
+        "target": {
+          "predicate_type": "minecraft:block_match",
+          "block": "minecraft:deepslate"
         },
         "state": {
           "Name": "paleolib:suspicious_deepslate",
+          "Properties": {
+            "dusted": "0"
+          }
+        }
+      },
+      {
+        "target": {
+          "predicate_type": "minecraft:block_match",
+          "block": "minecraft:sandstone"
+        },
+        "state": {
+          "Name": "paleolib:suspicious_sandstone",
+          "Properties": {
+            "dusted": "0"
+          }
+        }
+      },
+      {
+        "target": {
+          "predicate_type": "minecraft:block_match",
+          "block": "minecraft:red_sandstone"
+        },
+        "state": {
+          "Name": "paleolib:suspicious_red_sandstone",
+          "Properties": {
+            "dusted": "0"
+          }
+        }
+      },
+      {
+        "target": {
+          "predicate_type": "minecraft:block_match",
+          "block": "minecraft:calcite"
+        },
+        "state": {
+          "Name": "paleolib:suspicious_calcite",
+          "Properties": {
+            "dusted": "0"
+          }
+        }
+      },
+      {
+        "target": {
+          "predicate_type": "minecraft:block_match",
+          "block": "minecraft:dripstone_block"
+        },
+        "state": {
+          "Name": "paleolib:suspicious_dripstone_block",
           "Properties": {
             "dusted": "0"
           }
