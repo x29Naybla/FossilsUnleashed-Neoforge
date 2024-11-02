@@ -3,7 +3,6 @@ package com.x29naybla.fossilsunleashed.block;
 import com.x29naybla.fossilsunleashed.FossilsUnleashed;
 import com.x29naybla.fossilsunleashed.block.custom.VelociraptorEggBlock;
 import com.x29naybla.fossilsunleashed.item.ModItems;
-import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;

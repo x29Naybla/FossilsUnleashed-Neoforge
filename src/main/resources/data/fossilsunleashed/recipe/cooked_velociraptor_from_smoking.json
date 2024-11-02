@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:smoking",
+  "category": "food",
+  "ingredient": {
+    "item": "fossilsunleashed:velociraptor"
+  },
+  "result": {
+    "id": "fossilsunleashed:cooked_velociraptor"
+  },
+  "experience": 0.35,
+  "cookingtime": 100
+}
