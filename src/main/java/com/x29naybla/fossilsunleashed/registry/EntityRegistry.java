@@ -3,6 +3,7 @@ package com.x29naybla.fossilsunleashed.registry;
 import com.x29naybla.fossilsunleashed.FossilsUnleashed;
 import com.x29naybla.fossilsunleashed.entity.DodoEntity;
 import com.x29naybla.fossilsunleashed.entity.VelociraptorEntity;
+import com.x29naybla.fossilsunleashed.entity.projectile.DodoEgg;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
@@ -15,6 +16,8 @@ import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.entity.EntityAttributeCreationEvent;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
+
+import java.util.function.Supplier;
 
 @EventBusSubscriber(modid = FossilsUnleashed.MOD_ID, bus = EventBusSubscriber.Bus.MOD)
 public class EntityRegistry {
@@ -38,6 +41,12 @@ public class EntityRegistry {
         event.put(EntityRegistry.DODO.get(), dodoAttributes.build());
         event.put(EntityRegistry.VELOCIRAPTOR.get(), velociraptorAttributes.build());
     }
+
+    public static final Supplier<EntityType<DodoEgg>> DODO_EGG = ENTITY_TYPES.register("dodo_egg", () -> (
+            EntityType.Builder.<DodoEgg>of(DodoEgg::new, MobCategory.MISC)
+                    .sized(0.25F, 0.25F)
+                    .clientTrackingRange(16)
+                    .build("dodo_egg")));
 
     private static <T extends Mob> DeferredHolder<EntityType<?>, EntityType<T>> register(String name, EntityType.EntityFactory<T> entity, float width, float height) {
         return ENTITY_TYPES.register(name, () -> EntityType.Builder.of(entity, MobCategory.CREATURE).sized(width, height).build(name));

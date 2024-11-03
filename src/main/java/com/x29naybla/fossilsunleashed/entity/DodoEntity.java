@@ -1,16 +1,19 @@
 package com.x29naybla.fossilsunleashed.entity;
 
+import com.x29naybla.fossilsunleashed.item.ModItems;
 import com.x29naybla.fossilsunleashed.registry.EntityRegistry;
 import com.x29naybla.fossilsunleashed.util.ModTags;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.goal.*;
 import net.minecraft.world.entity.animal.Animal;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.gameevent.GameEvent;
 import org.jetbrains.annotations.Nullable;
 import software.bernie.geckolib.animatable.GeoEntity;
 import software.bernie.geckolib.animatable.instance.AnimatableInstanceCache;
@@ -26,9 +29,11 @@ public class DodoEntity extends Animal implements GeoEntity {
     private final AnimatableInstanceCache geoCache = GeckoLibUtil.createInstanceCache(this);
 
     private static final Ingredient FOOD_ITEMS = Ingredient.of(ModTags.Items.DODO_FOOD);
+    public int eggTime;
 
     public DodoEntity(EntityType<? extends DodoEntity> entityType, Level level) {
         super(entityType, level);
+        this.eggTime = this.random.nextInt(6000) + 6000;
     }
 
     @Override
@@ -41,7 +46,7 @@ public class DodoEntity extends Animal implements GeoEntity {
             if(isSprinting()){
                 event.setAnimation(RUN);
             }else
-            event.setAnimation(WALK);
+                event.setAnimation(WALK);
         } else {
             event.setAnimation(IDLE);
         }
@@ -62,6 +67,18 @@ public class DodoEntity extends Animal implements GeoEntity {
         this.goalSelector.addGoal(4, new WaterAvoidingRandomStrollGoal(this, 1.0));
         this.goalSelector.addGoal(5, new LookAtPlayerGoal(this, Player.class, 8.0F));
         this.goalSelector.addGoal(6, new RandomLookAroundGoal(this));
+    }
+
+    @Override
+    public void aiStep() {
+        super.aiStep();
+        if (!this.level().isClientSide && this.isAlive() && !this.isBaby() && --this.eggTime <= 0) {
+            this.playSound(SoundEvents.CHICKEN_EGG, 1.0F, (this.random.nextFloat() - this.random.nextFloat()) * 0.2F + 1.0F);
+            this.spawnAtLocation(ModItems.DODO_EGG);
+            this.gameEvent(GameEvent.ENTITY_PLACE);
+            this.eggTime = this.random.nextInt(6000) + 6000;
+        }
+
     }
 
     @Override
@@ -87,5 +104,18 @@ public class DodoEntity extends Animal implements GeoEntity {
     @Override
     public boolean isFood(ItemStack itemStack) {
         return FOOD_ITEMS.test(itemStack);
+    }
+
+    public void readAdditionalSaveData(CompoundTag compound) {
+        super.readAdditionalSaveData(compound);
+        if (compound.contains("EggLayTime")) {
+            this.eggTime = compound.getInt("EggLayTime");
+        }
+
+    }
+
+    public void addAdditionalSaveData(CompoundTag compound) {
+        super.addAdditionalSaveData(compound);
+        compound.putInt("EggLayTime", this.eggTime);
     }
 }

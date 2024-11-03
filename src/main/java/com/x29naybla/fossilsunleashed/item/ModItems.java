@@ -1,6 +1,7 @@
 package com.x29naybla.fossilsunleashed.item;
 
 import com.x29naybla.fossilsunleashed.FossilsUnleashed;
+import com.x29naybla.fossilsunleashed.item.custom.DodoEggItem;
 import com.x29naybla.fossilsunleashed.registry.EntityRegistry;
 import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.Item;
@@ -32,7 +33,7 @@ public class ModItems {
             () -> new Item(new Item.Properties()));
 
     public static final DeferredItem<Item> DODO_EGG = ITEMS.register("dodo_egg",
-            () -> new Item(new Item.Properties()));
+            () -> new DodoEggItem(new Item.Properties()));
     public static final DeferredItem<Item> VELOCIRAPTOR = ITEMS.register("velociraptor",
             () -> new Item(new Item.Properties().food(ModFoodProperties.VELOCIRAPTOR)));
     public static final DeferredItem<Item> COOKED_VELOCIRAPTOR = ITEMS.register("cooked_velociraptor",
